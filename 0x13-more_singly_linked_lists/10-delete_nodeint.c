@@ -1,49 +1,46 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "lists.h"
 
 /**
-* insert_nodeint_at_index - inserts a new node at a given position
+* delete_nodeint_at_index - deletes the node at a given index
+* of a listint_t linked list
 * @head: double pointer to the head of the listint_t linked list
-* @idx: the index of the list where the new node should be added
-* @n: element/property n of the node to be added
-* Return: address of the new element (SUCCESS), or
-* NULL if it failed (FAILURE), or
-* NULL if is not possible to add the new node at index @idx
+* @index: the index of the node that should be deleted
+* Return: 1 if it succeeded, or
+* -1 if it failed
 */
 
-listint_t *insert_nodeint_at_index(listint_t **head, unsigned int idx, int n)
+int delete_nodeint_at_index(listint_t **head, unsigned int index)
 {
 	unsigned int i = 0;
-	listint_t *current_node = *head, *new_node_ptr;
+	listint_t *current_node = *head, *temp;
 
-	if (idx == 0)
+	if (!current_node)
+		return (-1);
+
+	if (index == 0)
 	{
-		new_node_ptr = malloc(sizeof(listint_t));
+		*head = current_node->next;
+		free(current_node);
 
-		if (!new_node_ptr)
-			return (NULL);
-		new_node_ptr->n = n;
-		new_node_ptr->next = *head;
-		*head = new_node_ptr;
-		return (new_node_ptr);
+		return (1);
 	}
 
-	while (current_node && ((i + 1) != idx))
+	while (current_node->next && ((i + 1) != index))
 	{
 		current_node = current_node->next;
 		i++;
 	}
 
-	if ((i + 1) == idx)
+	if ((i + 1) == index && current_node->next)
 	{
-		new_node_ptr = malloc(sizeof(listint_t));
+		temp = current_node->next;
+		current_node->next = temp->next;
+		free(temp);
 
-		if (!new_node_ptr)
-			return (NULL);
-		new_node_ptr->n = n;
-		new_node_ptr->next = current_node->next;
-		current_node->next = new_node_ptr;
-		return (new_node_ptr);
+		return (1);
 	}
-	return (NULL);
+
+	return (-1);
 }
